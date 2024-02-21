@@ -3,21 +3,31 @@ from django.utils.timezone import now
 
 # User model 
 class User(models.Model):
+    """
+    A base model representing a user with common fields like first name, last name, and date of birth.
+    """
     first_name = models.CharField(null=False, max_length=30, default='john')
     last_name = models.CharField(null=False, max_length=30, default='doe')
     dob = models.DateField(null=True)
 
-    # Create a toString method for object string representation
     def __str__(self):
+        """
+        Returns a string representation of the User object.
+        """
         return self.first_name + " " + self.last_name
 
 # Instructor model
 class Instructor(User):
+    """
+    A model representing an instructor, inheriting from the User model.
+    """
     full_time = models.BooleanField(default=True)
     total_learners = models.IntegerField()
     
-    # Create a toString method for object string representation
     def __str__(self):
+        """
+        Returns a string representation of the Instructor object.
+        """
         return "First name: " + self.first_name + ", " + \
                "Last name: " + self.last_name + ", " + \
                "Is full time: " + str(self.full_time) + ", " + \
@@ -25,28 +35,34 @@ class Instructor(User):
 
 # Learner model
 class Learner(User):
+    """
+    A model representing a learner, inheriting from the User model.
+    """
     STUDENT = 'student'
     DEVELOPER = 'developer'
     DATA_SCIENTIST = 'data_scientist'
     DATABASE_ADMIN = 'dba'
+    
     OCCUPATION_CHOICES = [
         (STUDENT, 'Student'),
         (DEVELOPER, 'Developer'),
         (DATA_SCIENTIST, 'Data Scientist'),
         (DATABASE_ADMIN, 'Database Admin')
     ]
-    # Occupation Char field with defined enumeration choices
+    
     occupation = models.CharField(
         null=False, 
         max_length=20,
         choices=OCCUPATION_CHOICES,
         default=STUDENT
     )
-    # Social link URL field
+    
     social_link = models.URLField(max_length=200)
 
-    # Create a toString method for object string representation
     def __str__(self):
+        """
+        Returns a string representation of the Learner object.
+        """
         return "First name: " + self.first_name + ", " + \
                "Last name: " + self.last_name + ", " + \
                "Date of Birth: " + str(self.dob) + ", " + \
@@ -55,43 +71,61 @@ class Learner(User):
 
 # Course model
 class Course(models.Model):
+    """
+    A model representing a course with a name, description, instructors, and enrolled learners.
+    """
     name = models.CharField(null=False, max_length=100, default='online course')
     description = models.CharField(max_length=500)
-    # Many-To-Many relationship with Instructor
+    
     instructors = models.ManyToManyField(Instructor)
-    # Many-To-Many relationship with Learner via Enrollment relationship
     learners = models.ManyToManyField(Learner, through='Enrollment')
     
-    # Create a toString method for object string representation
     def __str__(self):
+        """
+        Returns a string representation of the Course object.
+        """
         return "Name: " + self.name + "," + \
             "Description: " + self.description
 
-# Lesson
+# Lesson model
 class Lesson(models.Model):
+    """
+    A model representing a lesson in a course with a title, content, and associated course.
+    """
     title = models.CharField(max_length=200, default="title")
     course = models.ForeignKey(Course, null=True, on_delete=models.CASCADE)
     content = models.TextField()
 
-    # Create a toString method for object string representation
     def __str__(self):
+        """
+        Returns a string representation of the Lesson object.
+        """
         return "Title: " + self.title + ", " + \
                 "Course: " + self.course + ", " + \
                 "Content: " + self.content
 
-# Enrollment modle as a lookup table with additonal enrollment info
+# Enrollment model as a lookup table with additional enrollment info
 class Enrollment(models.Model):
+    """
+    A model representing an enrollment with a learner, course, enrollment date, and mode.
+    """
     AUDIT = 'audit'
     HONOR = 'honor'
     COURSE_MODES = [
         (AUDIT, 'Audit'),
         (HONOR, 'Honor'),
     ]
-    # Add a learner foreign key
+    
     learner = models.ForeignKey(Learner, on_delete=models.CASCADE)
-    # Add a course foreign key
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    # Enrollment date
     date_enrolled = models.DateField(default=now)
-    # Enrolment mode
     mode = models.CharField(max_length=5, choices=COURSE_MODES, default=AUDIT)
+
+    def __str__(self):
+        """
+        Returns a string representation of the Enrollment object.
+        """
+        return "Learner: " + str(self.learner) + ", " + \
+               "Course: " + str(self.course) + ", " + \
+               "Date Enrolled: " + str(self.date_enrolled) + ", " + \
+               "Mode: " + self.mode
