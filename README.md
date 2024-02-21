@@ -44,4 +44,11 @@ This Django project serves as a Learning Platform Management System. It includes
      - Foreign key to `Course`.
 
 ## Scripts
-- 
+- `write.py`: Script to seed the database with sample data.
+   - `write_instructors()`: Adds instructor data to the database.
+   - `write_courses()`: Adds course data to the database.
+   - `write_learners()`: Adds learner data to the database.
+   - `clean_data()`: Cleans existing data from the database.
+- `find_queries.py`: Script demonstrating various query operations on the models. Finds instructors, learners, and performs filtering operations.
+- `manage.py`: Django management script to run commands and manage the project.
+
