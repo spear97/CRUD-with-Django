@@ -6,6 +6,9 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
+    """
+    This migration creates several models for a learning platform: Course, User, Instructor, Learner, Lesson, and Enrollment.
+    """
 
     initial = True
 
@@ -13,6 +16,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        # Create Course model
         migrations.CreateModel(
             name='Course',
             fields=[
@@ -21,6 +25,7 @@ class Migration(migrations.Migration):
                 ('description', models.CharField(max_length=500)),
             ],
         ),
+        # Create User model
         migrations.CreateModel(
             name='User',
             fields=[
@@ -30,24 +35,31 @@ class Migration(migrations.Migration):
                 ('dob', models.DateField(null=True)),
             ],
         ),
+        # Create Instructor model
         migrations.CreateModel(
             name='Instructor',
             fields=[
+                # Inherits from User
                 ('user_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='crud.user')),
                 ('full_time', models.BooleanField(default=True)),
                 ('total_learners', models.IntegerField()),
             ],
+            # Specify User as the base model
             bases=('crud.user',),
         ),
+        # Create Learner model
         migrations.CreateModel(
             name='Learner',
             fields=[
+                # Inherits from User
                 ('user_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='crud.user')),
                 ('occupation', models.CharField(choices=[('student', 'Student'), ('developer', 'Developer'), ('data_scientist', 'Data Scientist'), ('dba', 'Database Admin')], default='student', max_length=20)),
                 ('social_link', models.URLField()),
             ],
+            # Specify User as the base model
             bases=('crud.user',),
         ),
+        # Create Lesson model
         migrations.CreateModel(
             name='Lesson',
             fields=[
@@ -57,6 +69,7 @@ class Migration(migrations.Migration):
                 ('course', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='crud.course')),
             ],
         ),
+        # Create Enrollment model
         migrations.CreateModel(
             name='Enrollment',
             fields=[
@@ -67,11 +80,13 @@ class Migration(migrations.Migration):
                 ('learner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='crud.learner')),
             ],
         ),
+        # Add instructors field to Course model
         migrations.AddField(
             model_name='course',
             name='instructors',
             field=models.ManyToManyField(to='crud.instructor'),
         ),
+        # Add learners field to Course model through Enrollment model
         migrations.AddField(
             model_name='course',
             name='learners',
