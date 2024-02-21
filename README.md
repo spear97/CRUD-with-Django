@@ -69,11 +69,11 @@ This Django project serves as a Learning Platform Management System. It includes
    ```bash
    source venv/bin/activate   # Linux/Mac
    venv\Scripts\activate      # Windows
-   ``
+   ```
 2. Start the Django development server:
    ```bash
    python manage.py runserver
-   ``
+   ```
 3. Access the admin panel at http://localhost:8000/admin/ to manage the data.
    - Login with the admin credentials.
    - Explore and manage users, instructors, learners, courses, lessons, and enrollments.
